@@ -26,6 +26,9 @@ function onFormSubmit(event){
   let delay = parseInt(refs.delay.value);
   let step = parseInt(refs.step.value);
   let amount = parseInt(refs.amount.value);
+  if(delay < 0 || step < 0 || amount <=0){
+    return window.alert("Values must be greater than zero")
+  }
   for (let position = 1; position <= amount; position++) {
     createPromise(position, delay + step*(position-1))
     .then(({ position, delay }) => {

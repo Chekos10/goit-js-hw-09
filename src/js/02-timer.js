@@ -6,14 +6,14 @@ const refs = {
     days: document.querySelector("span[data-days]"),
     hours: document.querySelector("span[data-hours]"),
     minutes: document.querySelector("span[data-minutes]"),
-    seconds: document.querySelector("span[data-seconds]")
-
+    seconds: document.querySelector("span[data-seconds]"),
+    dataPicker: document.getElementById("datetime-picker"),
 }
-console.log(refs.days)
+console.log(refs.dataPicker)
 refs.timerShow.style["display"] = "flex"
 refs.timerShow.style["gap"] = "8px"
 refs.startBtn.disabled = 'true'
-refs.startBtn.addEventListener("click", handleTimer);
+refs.startBtn.addEventListener("click", updateFaceClock);
 const STEP_OF_TIME = 1000;
 const currentDate = Date.now();
 let futureDate = null;
@@ -34,20 +34,28 @@ flatpickr('#datetime-picker', {
         refs.startBtn.disabled = ''
     },
 })
-function handleTimer(){
+function updateFaceClock(){
     refs.startBtn.disabled = "true"
-    setInterval(()=>{ 
+    refs.dataPicker.disabled = "true"
+    const timerId = setInterval(()=>{ 
         let now = Date.now()
         const interval = futureDate-now
         const {days, hours, minutes, seconds} = convertMs(interval)
+        if(futureDate <= now){
+            return clearInterval(timerId)
+        }
         refs.days.textContent = days
         refs.hours.textContent = hours
-        refs.hours.textContent = minutes
+        refs.minutes.textContent = minutes
         refs.seconds.textContent = seconds
+
     },STEP_OF_TIME)
 }
 
 
+function pad(value){
+    return String(value).padStart( 2, '0')
+}
 
 function convertMs(ms) {
     // Number of milliseconds per unit of time
@@ -57,13 +65,13 @@ function convertMs(ms) {
     const day = hour * 24;
 
     // Remaining days
-    const days = Math.floor(ms / day);
+    const days = pad(Math.floor(ms / day));
     // Remaining hours
-    const hours = Math.floor((ms % day) / hour);
+    const hours = pad(Math.floor((ms % day) / hour));
     // Remaining minutes
-    const minutes = Math.floor(((ms % day) % hour) / minute);
+    const minutes = pad(Math.floor(((ms % day) % hour) / minute));
     // Remaining seconds
-    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+    const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
     return { days, hours, minutes, seconds };
 }

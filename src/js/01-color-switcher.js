@@ -5,7 +5,7 @@ const refs = {
 const DELAY_OF_SWITCH = 1000;
 refs.startBtn.addEventListener('click', startChangeColor)
 refs.stopBtn.addEventListener('click', stopChangeColor)
-let interId = null;
+let intervalId = null;
 function startChangeColor(event){
     event.target.disabled = "true"
         intervalId = setInterval(()=>{
